@@ -227,7 +227,23 @@ def fetchNearbyPlaces(url):
         #Fetch Image url
         imageUrl = place.find('picture',attrs={'class':'NhWcC _R'}).img['src']
 
+        #Fetch Place Name
+        placeName = place.find('div',attrs={'class':'XfVdV o AIbhI'}).text
+
+        #Fetch On Click Link
+        onClickLink = "https://tripadvisor.in"+place.find('div',attrs={'class':'alPVI eNNhq PgLKC tnGGX'}).a['href']
+
+        #Fetch Place short Description
+        description = place.find('div',attrs={'class':'biGQs _P pZUbB hmDzD'}).text
+
+        #Fetch Place Rating
+        rating = len(place.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'}))
+
         rdict['image'] = imageUrl
+        rdict['place'] = placeName
+        rdict['link'] = onClickLink
+        rdict['description'] = description
+        rdict['rating'] = rating
         print(imageUrl)
         print("\n******************************\n")
         arr.append(rdict)
