@@ -99,13 +99,6 @@ def getImageSrc(monumentName):
     return jsonify(imgList)
 
 
-class ReviewCard:
-    def __init__(self,reviewerName,reviewerDate,reviewerRating,reviewerTitle,reviewerReview):
-        self.reviewerName = reviewerName
-        self.reviewerDate = reviewerDate
-        self.reviewerRating = reviewerRating
-        self.reviewerTitle = reviewerTitle
-        self.reviewerReview = reviewerReview
 
 
 def fetchReviews(url):
@@ -193,11 +186,60 @@ def fetchReviews(url):
 @app.route('/reviews',methods=['POST'])
 def getMonumentReviews():
     url = request.form.get('url')
-    time.sleep(2) # to limit the number of requests
+    # time.sleep(2) # to limit the number of requests
     data = fetchReviews(url)
     # r = requests.get(url,headers=headers_Get)
     # soup = bs(r.content, 'html.parser')
     # print(url)
+    return jsonify(data)
+
+
+def fetchHotels(url):
+    r = requests.get(url,  headers={'User-Agent': "Mozilla/5.0"})             
+    soup = bs(r.content, 'html.parser') 
+    dict = {}
+
+    #Fetch Average Rating of Monument
+    hotelCards = soup.find_all('div',attrs={'class':'listing_title ui_columns is-gapless is-mobile is-multiline'})
+    for hotel in hotelCards:
+        print(hotel)
+        print("\n******************************\n")
+    
+    return dict
+
+@app.route('/hotels',methods=['POST'])
+def getHotels():
+    url = request.form.get('url')
+    # time.sleep(2) # to limit the number of requests
+    data = fetchHotels(url)
+    return jsonify(data)
+
+def fetchNearbyPlaces(url):
+    r = requests.get(url,  headers={'User-Agent': "Mozilla/5.0"})             
+    soup = bs(r.content, 'html.parser') 
+    dict = {}
+
+    arr=[]
+    #Fetch NaerBy Places card
+    nearByPlacesCard = soup.find_all('article',attrs={'class':'GTuVU XJlaI'})
+    for place in nearByPlacesCard:
+        rdict={}
+        #Fetch Image url
+        imageUrl = place.find('picture',attrs={'class':'NhWcC _R'}).img['src']
+
+        rdict['image'] = imageUrl
+        print(imageUrl)
+        print("\n******************************\n")
+        arr.append(rdict)
+    
+    # dict['places']=arr
+    return arr
+
+@app.route('/nearByPlaces',methods=['POST'])
+def getNearbyPlaces():
+    url = request.form.get('url')
+    # time.sleep(2) # to limit the number of requests
+    data = fetchNearbyPlaces(url)
     return jsonify(data)
 
 @app.errorhandler(500)
