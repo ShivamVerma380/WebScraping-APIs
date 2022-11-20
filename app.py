@@ -98,17 +98,103 @@ def getImageSrc(monumentName):
         imgList.append(i['src'])
     return jsonify(imgList)
 
-# def fetchReviews(url):
+
+class ReviewCard:
+    def __init__(self,reviewerName,reviewerDate,reviewerRating,reviewerTitle,reviewerReview):
+        self.reviewerName = reviewerName
+        self.reviewerDate = reviewerDate
+        self.reviewerRating = reviewerRating
+        self.reviewerTitle = reviewerTitle
+        self.reviewerReview = reviewerReview
+
+
+def fetchReviews(url):
+    r = requests.get(url,  headers={'User-Agent': "Mozilla/5.0"})             
+    soup = bs(r.content, 'html.parser') 
+    dict = {}
+
+    #Fetch Average Rating of Monument
+    rating = soup.find('div',attrs={'class':'biGQs _P fiohW hzzSG uuBRH'})
+    dict['rating'] = rating.text
+
+    #Fetch Nos Of Reviews of Monument
+    nosOfReviews = soup.find('span',attrs={'class':'biGQs _P pZUbB biKBZ KxBGd'})
+    dict['nosOfReviews'] = nosOfReviews.text
+
+    #Nos Of Excellent Reviews
+    nosOfExcellentReviews = soup.find_all('div',attrs={'class':'biGQs _P pZUbB osNWb'})
+    dict['nosOfExcellentReviews'] = nosOfExcellentReviews[0].text
+
+    #Nos Of Very Good Reviews
+    dict['nosOfVeryGoodReviews'] = nosOfExcellentReviews[1].text
+
+    #Nos Of Average Reviews
+    dict['nosOfAverageReviews'] = nosOfExcellentReviews[2].text
+
+    #Nos Of Poor Reviews
+    dict['nosOfPoorReviews'] = nosOfExcellentReviews[3].text
+
+    #Nos Of Terrible Reviews
+    dict['nosOfTerribleReviews'] = nosOfExcellentReviews[4].text
+
+    reviews = soup.find_all('div',attrs={'data-automation':'reviewCard'})
+    r = []
+    for review in reviews:
+        rdict = {}
+        #Fetch Reviewer Name
+        reviewerName = review.find('a',attrs={'class':'BMQDV _F G- wSSLS SwZTJ FGwzt ukgoS'})
+        
+        r = review.find_all('span',attrs={'class':'yCeTE'})
+
+        #Fetch Reviewer Rating
+        reviewerRating = review.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'})
+        # print(len(reviewerRating))        
+        # print(r)
+
+        #Fetch Review Title
+        reviewTitle = r[0].text
+
+
+        #Fetch Review Text
+        reviewText = r[1].text
+
+        #Fetch Review Date
+        reviewDate = review.find('div',attrs={'class':'RpeCd'})
+
+        rdict['reviewerName'] = reviewerName.text
+        rdict['reviewerRating'] = str(len(reviewerRating))
+        rdict['reviewTitle'] = reviewTitle
+        rdict['reviewText'] = reviewText
+        rdict['reviewDate'] = reviewDate.text
+
+        print(reviewerName.text+"\t"+reviewDate.text+"\t"+str(len(reviewerRating))+"\t"+ reviewTitle+ "\t" +reviewText)
+        print("\n******************************\n")
+
+        return rdict
+        # reviewCard = ReviewCard()
+        # r.append(reviewCard)
+        # r.append(reviewerName.text)
+        # r
+    # dict['reviewerNames',r]
+    # print(reviews)
+    # print(soup)
+    # reviews = soup.find_all('div',attrs={'class' : 'review-container'})
+    # reviewList = []
+    # for i in reviews:
+    #     reviewList.append(i.text)
+    # dict['reviews']=r
+    return r
     
 
 @app.route('/reviews',methods=['POST'])
 def getMonumentReviews():
     url = request.form.get('url')
-    # data = fetchReviews(url)
+    time.sleep(2) # to limit the number of requests
+    data = fetchReviews(url)
     # r = requests.get(url,headers=headers_Get)
     # soup = bs(r.content, 'html.parser')
-    print(url)
-    return jsonify(url)
+    # print(url)
+    return jsonify(data)
 
 @app.errorhandler(500)
 def page_not_found(e):
