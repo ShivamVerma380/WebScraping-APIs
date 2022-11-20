@@ -138,7 +138,7 @@ def fetchReviews(url):
     dict['nosOfTerribleReviews'] = nosOfExcellentReviews[4].text
 
     reviews = soup.find_all('div',attrs={'data-automation':'reviewCard'})
-    r = []
+    arr = []
     for review in reviews:
         rdict = {}
         #Fetch Reviewer Name
@@ -170,7 +170,10 @@ def fetchReviews(url):
         print(reviewerName.text+"\t"+reviewDate.text+"\t"+str(len(reviewerRating))+"\t"+ reviewTitle+ "\t" +reviewText)
         print("\n******************************\n")
 
-        return rdict
+
+        arr.append(rdict)
+        
+        # return rdict
         # reviewCard = ReviewCard()
         # r.append(reviewCard)
         # r.append(reviewerName.text)
@@ -182,8 +185,9 @@ def fetchReviews(url):
     # reviewList = []
     # for i in reviews:
     #     reviewList.append(i.text)
-    # dict['reviews']=r
-    return r
+    dict['reviews']=arr
+    # print(arr)
+    return dict
     
 
 @app.route('/reviews',methods=['POST'])
