@@ -197,15 +197,85 @@ def getMonumentReviews():
 def fetchHotels(url):
     r = requests.get(url,  headers={'User-Agent': "Mozilla/5.0"})             
     soup = bs(r.content, 'html.parser') 
-    dict = {}
+    arr = []
 
-    #Fetch Average Rating of Monument
-    hotelCards = soup.find_all('div',attrs={'class':'listing_title ui_columns is-gapless is-mobile is-multiline'})
-    for hotel in hotelCards:
-        print(hotel)
-        print("\n******************************\n")
+    # hotel = soup.find('div',attrs={'id':'taplc_hsx_hotel_list_lite_dusty_hotels_combined_sponsored_dated_0'})
+    # # for hotel in soup.find_all('div',attrs={'id':'taplc_hsx_hotel_list_lite_dusty_hotels_combined_sponsored_dated_0'}):
+    # #     print(hotel)
+    #     # print("\n******************************\n")
+
+    # # soup = bs(hotel, 'html.parser')
+    # hotels=[]
+    # images = []
+    # for image in hotel.find_all('img'):
+    #     # i = image['src']
+    #     # title = image['a']
+    #     # print(title+"\t"+i)
+    #     images.append(image['src'])
+    #     # print("\n******************************\n")
+
+    # titles = []
+    # for h in hotel.find_all('a'):
+    #     # titles.append(h.text)
+    #     print(h)
+    #     print("\n******************************\n")
+
+    image = []
+    for i in soup.find_all('img',attrs={'class':'_C _Z w'}):
+        image.append(i['src'])
     
-    return dict
+    # print(image)
+
+    # print("\n******************************\n")
+
+    
+    hotel = []
+
+    for name in soup.find_all('div',attrs={'class':'listing_title'}):
+        hotel.append(name.text.strip())
+
+    # print(hotel)
+
+    ratings = []
+
+    for rating in soup.find_all('a',{'class':'ui_bubble_rating'}):
+        ratings.append(rating['alt'].strip())
+
+    # print("\n******************************\n")
+
+    # print(ratings)
+
+    # print("\n******************************\n")
+
+    price = []
+
+    for p in soup.find_all('div',attrs={'class':'price-wrap'}):
+        price.append(p.text.strip())
+    
+    # print(price)
+
+    # print("\n******************************\n")
+
+    i = 0
+
+    
+    for h in hotel:
+        dict = {}
+        dict['hotelName'] = h
+        dict['price'] = price[i]
+        dict['rating'] = ratings[i]
+        if(i<len(image)):
+            dict['image'] = image[i]
+            # print(h+"\t"+ratings[i]+"\t"+price[i]+"\t"+image[i])
+        else:
+            dict['image'] = ""
+            # print(h+"\t"+ratings[i]+"\t"+price[i]+"\t"+"")
+        i+=1
+        # print("\n******************************\n")
+        arr.append(dict)
+    
+    
+    return arr
 
 @app.route('/hotels',methods=['POST'])
 def getHotels():
