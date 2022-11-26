@@ -107,59 +107,106 @@ def fetchReviews(url):
     dict = {}
 
     #Fetch Average Rating of Monument
-    rating = soup.find('div',attrs={'class':'biGQs _P fiohW hzzSG uuBRH'})
-    dict['rating'] = rating.text
-
+    try:
+        rating = soup.find('div',attrs={'class':'biGQs _P fiohW hzzSG uuBRH'})
+        dict['rating'] = rating.text
+    except:
+        dict['rating'] = ''
     #Fetch Nos Of Reviews of Monument
-    nosOfReviews = soup.find('span',attrs={'class':'biGQs _P pZUbB biKBZ KxBGd'})
-    dict['nosOfReviews'] = nosOfReviews.text
-
+    try:
+        nosOfReviews = soup.find('span',attrs={'class':'biGQs _P pZUbB biKBZ KxBGd'})
+        dict['nosOfReviews'] = nosOfReviews.text
+    except:
+        dict['nosOfReviews'] = ''
     #Nos Of Excellent Reviews
-    nosOfExcellentReviews = soup.find_all('div',attrs={'class':'biGQs _P pZUbB osNWb'})
-    dict['nosOfExcellentReviews'] = nosOfExcellentReviews[0].text
-
+    try:
+        nosOfExcellentReviews = soup.find_all('div',attrs={'class':'biGQs _P pZUbB osNWb'})
+        dict['nosOfExcellentReviews'] = nosOfExcellentReviews[0].text
+    except:
+        dict['nosOfExcellentReviews'] = ''
     #Nos Of Very Good Reviews
-    dict['nosOfVeryGoodReviews'] = nosOfExcellentReviews[1].text
+    try:  
+        dict['nosOfVeryGoodReviews'] = nosOfExcellentReviews[1].text
+    except:
+        dict['nosOfVeryGoodReviews'] = ''
 
     #Nos Of Average Reviews
-    dict['nosOfAverageReviews'] = nosOfExcellentReviews[2].text
-
+    try:
+        dict['nosOfAverageReviews'] = nosOfExcellentReviews[2].text
+    except:
+        dict['nosOfAverageReviews'] = ''
     #Nos Of Poor Reviews
-    dict['nosOfPoorReviews'] = nosOfExcellentReviews[3].text
-
+    try:
+        dict['nosOfPoorReviews'] = nosOfExcellentReviews[3].text    
+    except:
+        dict['nosOfPoorReviews'] = ''
     #Nos Of Terrible Reviews
-    dict['nosOfTerribleReviews'] = nosOfExcellentReviews[4].text
-
+    try:
+        dict['nosOfTerribleReviews'] = nosOfExcellentReviews[4].text
+    except:
+        dict['nosOfTerribleReviews'] = ''
+    #Fetch Reviews
     reviews = soup.find_all('div',attrs={'data-automation':'reviewCard'})
     arr = []
     for review in reviews:
         rdict = {}
         #Fetch Reviewer Name
-        reviewerName = review.find('a',attrs={'class':'BMQDV _F G- wSSLS SwZTJ FGwzt ukgoS'})
-        
-        r = review.find_all('span',attrs={'class':'yCeTE'})
+        try:
+            reviewerName = review.find('a',attrs={'class':'BMQDV _F G- wSSLS SwZTJ FGwzt ukgoS'})
+        except:
+            reviewerName = ''
 
+        try:        
+            r = review.find_all('span',attrs={'class':'yCeTE'})
+        except:
+            r = ''
         #Fetch Reviewer Rating
-        reviewerRating = review.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'})
+        try:
+            reviewerRating = review.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'})
+        except:
+            reviewerRating = ''
         # print(len(reviewerRating))        
         # print(r)
 
         #Fetch Review Title
-        reviewTitle = r[0].text
-
+        try:
+            reviewTitle = r[0].text
+        except:
+            reviewTitle = ''
 
         #Fetch Review Text
-        reviewText = r[1].text
+        try:
+            reviewText = r[1].text
+        except:
+            reviewText = ''
 
+        
         #Fetch Review Date
-        reviewDate = review.find('div',attrs={'class':'RpeCd'})
+        try:
+            reviewDate = review.find('div',attrs={'class':'RpeCd'})
+        except:
+            reviewDate = ''
+        try:
+            rdict['reviewerName'] = reviewerName.text
+        except:
+            rdict['reviewerName'] = ''
 
-        rdict['reviewerName'] = reviewerName.text
-        rdict['reviewerRating'] = str(len(reviewerRating))
-        rdict['reviewTitle'] = reviewTitle
-        rdict['reviewText'] = reviewText
-        rdict['reviewDate'] = reviewDate.text
-
+        try:      
+            rdict['reviewerRating'] = str(len(reviewerRating))
+        except:
+            rdict['reviewerRating'] = ''
+        try:
+            rdict['reviewTitle'] = reviewTitle
+        except:
+            rdict['reviewTitle'] = ''
+        try:    
+            rdict['reviewText'] = reviewText
+        except:
+            rdict['reviewText'] = ''
+        try:
+            rdict['reviewDate'] = reviewDate.text
+        except:
+            rdict['reviewDate'] = ''
         print(reviewerName.text+"\t"+reviewDate.text+"\t"+str(len(reviewerRating))+"\t"+ reviewTitle+ "\t" +reviewText)
         print("\n******************************\n")
 
@@ -291,24 +338,39 @@ def fetchNearbyPlaces(url):
 
     arr=[]
     #Fetch NaerBy Places card
-    nearByPlacesCard = soup.find_all('article',attrs={'class':'GTuVU XJlaI'})
+    try:
+        nearByPlacesCard = soup.find_all('article',attrs={'class':'GTuVU XJlaI'})
+    except:
+        nearByPlacesCard = []
+
     for place in nearByPlacesCard:
         rdict={}
         #Fetch Image url
-        imageUrl = place.find('picture',attrs={'class':'NhWcC _R'}).img['src']
-
+        try:
+            imageUrl = place.find('picture',attrs={'class':'NhWcC _R'}).img['src']
+        except:
+            imageUrl = ""
         #Fetch Place Name
-        placeName = place.find('div',attrs={'class':'XfVdV o AIbhI'}).text
-
+        try:
+            placeName = place.find('div',attrs={'class':'XfVdV o AIbhI'}).text
+        except:
+            placeName = ""
         #Fetch On Click Link
-        onClickLink = "https://tripadvisor.in"+place.find('div',attrs={'class':'alPVI eNNhq PgLKC tnGGX'}).a['href']
-
+        try:
+            onClickLink = "https://tripadvisor.in"+place.find('div',attrs={'class':'alPVI eNNhq PgLKC tnGGX'}).a['href']
+        except:
+            onClickLink = ""
         #Fetch Place short Description
-        description = place.find('div',attrs={'class':'biGQs _P pZUbB hmDzD'}).text
-
+        try:
+            description = place.find('div',attrs={'class':'biGQs _P pZUbB hmDzD'}).text
+        except:
+            description = ""
         #Fetch Place Rating
-        rating = len(place.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'}))
-
+        try:
+            rating = len(place.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'}))
+        except:
+            rating = 0
+        
         rdict['image'] = imageUrl
         rdict['place'] = placeName
         rdict['link'] = onClickLink
@@ -327,6 +389,102 @@ def getNearbyPlaces():
     # time.sleep(2) # to limit the number of requests
     data = fetchNearbyPlaces(url)
     return jsonify(data)
+
+def fetchTours(url):
+    arr=[]
+    r = requests.get(url,  headers={'User-Agent': "Mozilla/5.0"})
+    soup = bs(r.content, 'html.parser')
+
+    for article in soup.find_all('article',attrs={'class':'GTuVU XJlaI rHoxO'}):
+        dict={}
+        try:
+            dict['image'] = article.find('picture',attrs={'class':'NhWcC _R'}).img['src']
+        except:
+            dict['image'] = ""
+
+        try:
+            dict['title'] = article.find('div',attrs={'class':'XfVdV o AIbhI'}).text
+        except:
+            dict['title'] = ""   
+
+        try:
+            dict['rating'] = article.find('div',attrs={'class','jVDab o W f u w JqMhy'}).svg['aria-label']
+        except:
+            dict['rating'] = "" 
+        
+        try:
+            dict['added-by'] = article.find('div',attrs={'class','biGQs _P pZUbB hmDzD'}).a.text
+        except:
+            dict['added-by'] = ""
+
+        try:
+            dict['type'] = article.find_all('div',attrs={'class':'biGQs _P pZUbB hmDzD'})[2].text
+        except:
+            dict['type'] = ""
+
+        try:
+            dict['time'] = article.find_all('div',attrs={'class':'biGQs _P pZUbB hmDzD'})[3].text
+        except:
+            dict['time'] = ""   
+
+        
+        # dict['rating'] = len(article.find_all('path',attrs={'d':'M 12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.38 12-12c0-6.612-5.38-12-12-12z'}))
+        
+        
+        
+        try:
+            dict['description'] = article.find('span',attrs={'class':'SwTtt'}).text
+        except:
+            dict['description'] = ""
+        
+        try:
+            dict['subInfo1'] = article.find_all('span',attrs={'class':'biGQs _P pZUbB egaXP hmDzD'})[0].text
+        except:
+            dict['subInfo1'] = ""
+        try:
+            dict['subInfo2'] = article.find('div',attrs={'class':'GvxaA'}).span.text
+        except:
+            dict['subInfo2'] = ""
+
+        try:
+            dict['amount-per-adult'] = article.find('div',attrs={'class':'biGQs _P fiohW avBIb ngXxk'}).text
+        except:
+            dict['amount-per-adult'] = ""
+
+        try:
+            dict['link'] = "https://www.tripadvisor.in"+article.find('a',attrs={'class':'rmyCe _G B- z _S c Wc wSSLS jWkoZ XDcOZ'})['href']
+        except:
+            dict['link'] = ""
+
+        # print(article.find('div',attrs={'class':'GvxaA'}).span.text)
+        print("\n******************************\n")
+        
+
+        arr.append(dict)
+
+    # names=[]
+    # for name in soup.find_all('div',attrs={'class':'XfVdV o AIbhI'}):
+    #     names.append(name.text)
+    #     # print(name.text)
+    #     # print("\n******************************\n")
+    # # print(names)
+
+    # images=[]
+
+    # for image in soup.find_all('picture',attrs={'class':'NhWcC _R mdkdE'}):
+    #     # images.append(image.img['src'])
+    #     print(image)
+    #     print("\n******************************\n")
+
+    return arr
+
+@app.route('/tours',methods=['POST'])
+def getTours():
+    url = request.form.get('url')
+    # time.sleep(2) # to limit the number of requests
+    data = fetchTours(url)
+    return jsonify(data)
+
 
 @app.errorhandler(500)
 def page_not_found(e):
